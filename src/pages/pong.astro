@@ -1,7 +1,16 @@
 ---
+import GameLayout from "../layouts/GameLayout.astro";
 import Layout from "../layouts/Layout.astro";
+import PongCanvas from "../components/PongCanvas.astro";
 ---
 
 <Layout title="JS GAMES - Pong">
-
+  <GameLayout>
+    Pong
+    <div slot="canvas">
+      <PongCanvas/>
+    </div>
+    <p slot="description">Aquí va la description</p>
+    <p slot="controls">Aquí van los controles</p>
+  </GameLayout>
 </Layout>
