@@ -1,4 +1,5 @@
 ---
+import ArkanoidCanvas from "../components/ArkanoidCanvas.astro";
 import GameLayout from "../layouts/GameLayout.astro";
 import Layout from "../layouts/Layout.astro";
 ---
@@ -7,7 +8,7 @@ import Layout from "../layouts/Layout.astro";
   <GameLayout>
     Arkanoid
     <div slot="canvas">
-
+      <ArkanoidCanvas />
     </div>
     <p slot="description">Aquí va la description</p>
     <p slot="controls">Aquí van los controles</p>

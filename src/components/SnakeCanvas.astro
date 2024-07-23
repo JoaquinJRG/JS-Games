@@ -1,0 +1,211 @@
+<canvas class="bg-black"></canvas>
+<img src="./snake/food.png" alt="food" id="food-img" hidden>
+<img src="./snake/tail.png" alt="tail" id="tail-img" hidden>
+<img src="./snake/head.png" alt="head" id="head-img" hidden>
+
+<script is:inline>
+  const CELL_SIZE = 25
+  const ROWS = 25
+  const COLS = 25
+  const WIDTH = COLS * CELL_SIZE
+  const HEIGHT = ROWS * CELL_SIZE
+
+  let foodX = 0
+  let foodY = 0
+  let moveUp = false
+  let moveDown = false
+  let moveRight = true
+  let moveLeft = false
+  let snakeLength = 2
+  let direction = "right"
+  let pop = new Audio("./assets/pop.wav")
+
+  const food = {
+    x: foodX,
+    y: foodY
+  }
+
+  const snake = {
+    x: CELL_SIZE * 10,
+    y: CELL_SIZE * 5,
+    tail: [{ x: CELL_SIZE * 10, y: CELL_SIZE * 5 }]
+  }
+
+  const canvas = document.querySelector("canvas")
+  const ctx = canvas.getContext("2d")
+  const foodImg = document.getElementById("food-img")
+  const tailImg = document.getElementById("tail-img")
+  const headImg = document.getElementById("head-img")
+
+
+  canvas.width = WIDTH
+  canvas.height = HEIGHT
+
+  // FUNCIONES
+  function cleanCanvas() {
+    ctx.clearRect(0, 0, WIDTH, HEIGHT)
+  }
+
+  function drawSnake() {
+
+    ctx.fillStyle = "lime";
+
+    for (let i = 0; i < snake.tail.length; i++) {
+      if (i === 0) {
+        drawRotatedImage(headImg, snake.tail[i].x, snake.tail[i].y, direction);
+      } else {
+        ctx.drawImage(tailImg, snake.tail[i].x, snake.tail[i].y);
+      }
+    }
+
+  }
+
+  function drawRotatedImage(image, x, y, direction) {
+    ctx.save();
+    ctx.translate(x + CELL_SIZE / 2, y + CELL_SIZE / 2);
+    let angle = 0;
+    switch (direction) {
+      case 'up':
+        angle = -Math.PI / 2;
+        break;
+      case 'down':
+        angle = Math.PI / 2;
+        break;
+      case 'left':
+        angle = Math.PI;
+        break;
+      case 'right':
+        angle = 0;
+        break;
+    }
+    ctx.rotate(angle);
+    ctx.drawImage(image, -CELL_SIZE / 2, -CELL_SIZE / 2, CELL_SIZE, CELL_SIZE);
+    ctx.restore();
+  }
+
+  function updateSnakePosition() {
+    let newHead = { x: snake.x, y: snake.y }
+
+    if (moveUp) {
+      newHead.y -= CELL_SIZE
+      direction = "up"
+    }
+    if (moveDown) {
+      newHead.y += CELL_SIZE
+      direction = "down"
+    }
+    if (moveRight) {
+      newHead.x += CELL_SIZE
+      direction = "right"
+    }
+    if (moveLeft) {
+      newHead.x -= CELL_SIZE
+      direction = "left"
+    }
+
+    foodColision(newHead);
+
+    snake.tail.unshift(newHead);
+    while (snake.tail.length > snakeLength) {
+      snake.tail.pop()
+    }
+
+    snake.x = newHead.x
+    snake.y = newHead.y
+  }
+
+  function borderColision() {
+    if (snake.x < 0 || snake.x + CELL_SIZE > WIDTH || snake.y < 0 || snake.y + CELL_SIZE > HEIGHT) {
+      resetGame()
+    }
+  }
+
+  function foodColision() {
+    if (food.x == snake.x && food.y == snake.y) {
+      randomPosition()
+      snakeLength++
+      pop.play()
+    }
+  }
+
+  function resetGame() {
+    snake.x = CELL_SIZE * 10
+    snake.y = CELL_SIZE * 5
+    moveUp = false
+    moveDown = false
+    moveRight = true
+    moveLeft = false
+    snakeLength = 2
+    direction = "right"
+
+  }
+
+  function drawFood() {
+    ctx.drawImage(foodImg, food.x, food.y)
+    //ctx.fillStyle = "red"
+    //ctx.fillRect(food.x, food.y, CELL_SIZE, CELL_SIZE)
+  }
+
+  function randomPosition() {
+    foodX = Math.floor( Math.random() * COLS )
+    foodY = Math.floor( Math.random() * ROWS )
+
+    food.x = CELL_SIZE *  foodX
+    food.y = CELL_SIZE * foodY
+  }
+
+  function snakeColision() {
+    for (let i = 1; i < snake.tail.length; i++) {
+      if (snake.tail[i].x === snake.x && snake.tail[i].y === snake.y) {
+        resetGame()
+      }   
+    }
+  }
+
+  function initEvents() {
+    document.addEventListener("keydown", (e) => {
+      e.preventDefault()
+      const key = e.key
+
+      if (key == "ArrowUp" && !moveDown){ 
+        moveUp = true
+        moveDown = false
+        moveRight = false
+        moveLeft = false
+      } else if (key == "ArrowDown" && !moveUp) {
+        moveUp = false
+        moveDown = true
+        moveRight = false
+        moveLeft = false
+      } else if (key == "ArrowRight" && !moveLeft) {
+        moveUp = false
+        moveDown = false
+        moveRight = true
+        moveLeft = false
+      } else if (key == "ArrowLeft" && !moveRight) {
+        moveUp = false
+        moveDown = false
+        moveRight = false
+        moveLeft = true
+      }
+
+    })
+  }
+
+  function draw() {
+    cleanCanvas()
+    drawSnake()
+    drawFood()
+
+    borderColision()
+    snakeColision()
+  }
+
+  randomPosition()
+  initEvents()
+
+  setInterval(() => {
+    updateSnakePosition()
+    draw()
+  }, 100)
+</script>

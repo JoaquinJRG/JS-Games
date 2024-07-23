@@ -1,5 +1,203 @@
 
 <canvas></canvas>
 <script is:inline>
+  // VARIABLES 
+  const CANVAS_WIDTH = 700
+  const CANVAS_HEIGHT = 500
+  const PADDLE_WIDTH = 10
+  const PADDLE_HEIGHT = 100
+  const PADDLE_DIRECTION = 7
+  let BALL_DIRECTION = 5
+  let audio = new Audio('./pong/pop.wav')
+
+  const canvas = document.querySelector("canvas")
+  const ctx = canvas.getContext("2d")
+  const score1 = document.getElementById("score1")
+  const score2 = document.getElementById("score2") 
+
+  canvas.width = CANVAS_WIDTH
+  canvas.height = CANVAS_HEIGHT
+
+  const ball = {
+    x: CANVAS_WIDTH / 2,
+    y: CANVAS_HEIGHT / 2,
+    radius: 10,
+    dx: BALL_DIRECTION,
+    dy: BALL_DIRECTION
+  }
+
+  const player1 = {
+    x: 20,
+    y: (CANVAS_HEIGHT / 2) - (PADDLE_HEIGHT / 2),
+    width: PADDLE_WIDTH,
+    height: PADDLE_HEIGHT,
+    upMove: false,
+    downMove: false,
+    dy: PADDLE_DIRECTION,
+    score: 0
+  }
+
+  const player2 = {
+    x: CANVAS_WIDTH - 20,
+    y: (CANVAS_HEIGHT / 2) - (PADDLE_HEIGHT / 2),
+    width: PADDLE_WIDTH,
+    height: PADDLE_HEIGHT,
+    upMove: false,
+    downMove: false,
+    dy: PADDLE_DIRECTION,
+    score: 0
+  }
+
+
+  // FUNCIONES
+  function initEvents() {
+    document.addEventListener("keydown", (e) => {
+      e.preventDefault()
+      const key = e.key
+
+      if (key == "w" || key == "W") {
+        player1.upMove = true
+      } else if (key == "s" || key == "S") {
+        player1.downMove = true
+      }
+
+      if (key == "ArrowUp") {
+        player2.upMove = true
+      } else if (key == "ArrowDown") {
+        player2.downMove = true
+      }
+
+    })
+
+    document.addEventListener("keyup", (e) => {
+      const key = e.key
+
+      if (key == "w" || key == "W") {
+        player1.upMove = false
+      } else if (key == "s" || key == "S") {
+        player1.downMove = false
+      }
+
+      if (key == "ArrowUp") {
+        player2.upMove = false
+      } else if (key == "ArrowDown") {
+        player2.downMove = false
+      }
+
+    })
+  }
+
+  function clearCanvas() {
+    ctx.fillStyle = "#000"
+    ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT)
+  }
+
+  function drawBall() {
+    ctx.beginPath()
+    ctx.arc(ball.x, ball.y, ball.radius, 0, 2 * Math.PI)
+    ctx.fillStyle = "#fff"
+    ctx.fill()
+    ctx.closePath()
+  }
+
+  function ballMovement() {
+    ball.x += ball.dx
+    ball.y += ball.dy
+  }
+
+  function ballColision() {
+    // BORDER COLISION
+    if (ball.y == ball.radius) ball.dy = -ball.dy
+    if (ball.x <= ball.radius) scorePlayer1()
+    if (ball.y == CANVAS_HEIGHT - ball.radius) ball.dy = -ball.dy
+    if (ball.x >= CANVAS_WIDTH - ball.radius) scorePlayer2()
+
+    //PADDLE COLISION
+    if (
+      (ball.x - ball.radius <= player1.x + player1.width && ball.x - ball.radius >= player1.x) && 
+      (ball.y >= player1.y && ball.y <= player1.y + player1.height)
+    ) {
+      audio.play()
+      ball.dx = -ball.dx
+    }
+
+    if ((ball.x + ball.radius >= player2.x && ball.x + ball.radius <= player2.x + player2.width) && 
+        (ball.y >= player2.y && ball.y <= player2.y + player2.height)
+    ) {
+      audio.play()
+      ball.dx = -ball.dx
+    }
+    
+
+  }
+
+  function drawPlayer1() {
+    ctx.fillStyle = "#fff"
+    ctx.fillRect(player1.x, player1.y, player1.width, player1.height)
+
+
+    if (player1.upMove && player1.y > 0) player1.y -= player1.dy
+    if (player1.downMove && player1.y + PADDLE_HEIGHT < CANVAS_HEIGHT) player1.y += player1.dy
+  }
+
+  function drawPlayer2() {
+    ctx.fillStyle = "#fff"
+    ctx.fillRect(player2.x, player2.y, player2.width, player2.height)
+
+    if (player2.upMove && player2.y > 0) player2.y -= player2.dy
+    if (player2.downMove && player2.y + PADDLE_HEIGHT < CANVAS_HEIGHT) player2.y += player2.dy
+  }
+
+  function drawLine() {
+    ctx.beginPath()
+    ctx.strokeStyle = "#fff"
+    ctx.setLineDash([5, 15])
+    ctx.moveTo(CANVAS_WIDTH / 2, 0)
+    ctx.lineTo(CANVAS_WIDTH / 2, CANVAS_HEIGHT)
+    ctx.stroke()
+  }
+
+  function scorePlayer1() {
+    //player1.score++
+    //score1.innerText = player1.score
+    ball.x = CANVAS_WIDTH / 2
+    ball.y = CANVAS_HEIGHT / 2
+  }
+
+  function scorePlayer2() {
+    //player2.score++ 
+    //score2.innerText = player2.score 
+    ball.x = CANVAS_WIDTH / 2
+    ball.y = CANVAS_HEIGHT / 2
+  }
+
+  function reset() {
+
+  }
+
+  function checkWinner() {}
+
+  function draw() {
+
+    clearCanvas()
+    
+    drawBall()
+    ballMovement()
+    ballColision()
+    drawPlayer1()
+    drawPlayer2()
+    drawLine()
+
+    window.requestAnimationFrame(draw)
+  }
+
+  draw()
+  initEvents()
   
+  resetBtn.addEventListener("click", () => {
+    resetBtn.style.display = "none"
+    playBtn.style.display = "block"
+    reset()
+  })
+
 </script>
