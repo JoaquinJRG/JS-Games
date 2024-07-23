@@ -7,13 +7,11 @@
   const PADDLE_WIDTH = 10
   const PADDLE_HEIGHT = 100
   const PADDLE_DIRECTION = 7
-  let BALL_DIRECTION = 5
+  let BALL_DIRECTION = 6
   let audio = new Audio('./pong/pop.wav')
 
   const canvas = document.querySelector("canvas")
   const ctx = canvas.getContext("2d")
-  const score1 = document.getElementById("score1")
-  const score2 = document.getElementById("score2") 
 
   canvas.width = CANVAS_WIDTH
   canvas.height = CANVAS_HEIGHT
@@ -158,24 +156,41 @@
   }
 
   function scorePlayer1() {
-    //player1.score++
-    //score1.innerText = player1.score
+    player1.score++
     ball.x = CANVAS_WIDTH / 2
     ball.y = CANVAS_HEIGHT / 2
+    checkWinner()
   }
 
   function scorePlayer2() {
-    //player2.score++ 
-    //score2.innerText = player2.score 
+    player2.score++ 
     ball.x = CANVAS_WIDTH / 2
     ball.y = CANVAS_HEIGHT / 2
+    checkWinner()
+  }
+
+  function drawScore() {
+    ctx.font = "40px sans-serif"
+    ctx.fillText(player1.score, 50, 50)
+    ctx.fillText(player2.score, CANVAS_WIDTH - 50, 50)
+  }
+
+  function checkWinner() {
+    if (player1.score == 10) {
+      alert("Player 1 win")
+      reset()
+    }
+
+    if (player2.score == 10) {
+      alert("Player 2 win")
+      reset()
+    }
   }
 
   function reset() {
-
+    player1.score = 0
+    player2.score = 0
   }
-
-  function checkWinner() {}
 
   function draw() {
 
@@ -187,17 +202,12 @@
     drawPlayer1()
     drawPlayer2()
     drawLine()
+    drawScore()
 
     window.requestAnimationFrame(draw)
   }
 
   draw()
   initEvents()
-  
-  resetBtn.addEventListener("click", () => {
-    resetBtn.style.display = "none"
-    playBtn.style.display = "block"
-    reset()
-  })
 
 </script>

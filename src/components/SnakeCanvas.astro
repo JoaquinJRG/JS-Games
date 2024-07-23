@@ -18,7 +18,8 @@
   let moveLeft = false
   let snakeLength = 2
   let direction = "right"
-  let pop = new Audio("./assets/pop.wav")
+  let pop = new Audio("./pop.wav")
+  let score = 0
 
   const food = {
     x: foodX,
@@ -125,6 +126,7 @@
       randomPosition()
       snakeLength++
       pop.play()
+      score++
     }
   }
 
@@ -137,13 +139,11 @@
     moveLeft = false
     snakeLength = 2
     direction = "right"
-
+    score = 0
   }
 
   function drawFood() {
     ctx.drawImage(foodImg, food.x, food.y)
-    //ctx.fillStyle = "red"
-    //ctx.fillRect(food.x, food.y, CELL_SIZE, CELL_SIZE)
   }
 
   function randomPosition() {
@@ -192,6 +192,11 @@
     })
   }
 
+  function drawPoints() {
+    ctx.font = "30px sans-serif"
+    ctx.fillText(`Score: ${score}`, 50, 50 )
+  }
+
   function draw() {
     cleanCanvas()
     drawSnake()
@@ -199,6 +204,7 @@
 
     borderColision()
     snakeColision()
+    drawPoints()
   }
 
   randomPosition()
