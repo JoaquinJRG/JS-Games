@@ -1,0 +1,14 @@
+---
+import Layout from "../layouts/Layout.astro";
+import GameLayout from "../layouts/GameLayout.astro";
+import { Board } from "../components/minesweeper/Board";
+---
+
+<Layout title="JS GAMES - Minesweeper">
+  <GameLayout>
+    Minesweeper
+    <div slot="canvas">
+      <Board client:visible />
+    </div>
+  </GameLayout>
+</Layout>
