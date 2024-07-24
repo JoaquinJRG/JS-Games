@@ -1,0 +1,18 @@
+---
+import GameLayout from "../layouts/GameLayout.astro";
+import Layout from "../layouts/Layout.astro";
+import {Board} from "../components/tic-tac-toe/Board.jsx"
+---
+
+<Layout title="JS Games - TIC TAC TOE">
+  <GameLayout>
+    TIC TAC TOE
+    <div slot="canvas">
+      <Board client:visible />
+    </div>
+      <!--
+        <p slot="description">Aquí va la description</p>
+        <p slot="controls">Aquí van los controles</p>>
+      -->
+  </GameLayout>
+</Layout>
