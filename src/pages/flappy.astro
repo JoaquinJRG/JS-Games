@@ -1,0 +1,17 @@
+---
+import GameLayout from "../layouts/GameLayout.astro";
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout title="JS Games - Flappy Bird">
+  <GameLayout>
+    Flappy Bird
+    <div slot="canvas">
+      <script is:inline type="module" crossorigin="true" src="./assets/index-Bv5sGtkj.js"></script>
+      <link rel="modulepreload" crossorigin href="./assets/phaser-C2_wa_Fb.js">
+      <div id="app">
+        <div id="game-container"></div>
+      </div>
+    </div>
+  </GameLayout>
+</Layout>
